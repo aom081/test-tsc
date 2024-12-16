@@ -58,6 +58,12 @@ class Order {
     public getPayment():Payment{
         return this.payment;
     }
+
+    public printOrderDetail():void{
+        for (let i = 0; i < this.orderDetails.length; i++) {
+            this.orderDetails[i].printDetail();
+        }
+    }
 }
 
 class OrderDetail{
@@ -81,6 +87,10 @@ class OrderDetail{
             return this.quantity * this.item.getTax();
         }
         return 0;
+    }
+
+    public printDetail():void{
+        console.log(this.item.getName() + "\t" + this.quantity + "(ชิ้น)" + this.calcSubTotal() + "(บาท)" )
     }
 }
 
@@ -107,6 +117,10 @@ class Item {
     }
     public inStock(){
         return true;
+    }
+
+    public getName(): string {
+        return this.description;
     }
 
     public getInfo():string{
@@ -169,3 +183,37 @@ class Cash extends Payment {
         return this.cashTendered - this.getAmount();
     }
 }
+
+//coutomer
+const customer1 = new Customer("John Doe", "123 Elm Street, Springfield");
+console.log(customer1.getInfo());
+
+//item
+const item1 = new Item(1.5, "Loyus's water", 15);
+console.log(item1.getInfo());
+
+const item2 = new Item(0.05, "Lays", 30);
+console.log(item2.getInfo())
+
+const item3 = new Item(0.10, "Mama", 6);
+console.log(item3.getInfo()) 
+
+console.log("##################### Order ########################");
+
+//order
+const order1 = new Order(customer1,"16/12/2567", "in progress");
+
+//Orderdetail
+const orderdetail1 = new OrderDetail(item1,1,"not included");
+const orderdetail2 = new OrderDetail(item2,2,"not included");
+const orderdetail3 = new OrderDetail(item3,5,"not included");
+
+//orderdetail => order
+order1.addOrderDetails(orderdetail1);
+order1.addOrderDetails(orderdetail2);
+
+const amount = order1.calcTotal();
+
+//Payment
+const cash = new Cash(amount, 1000);
+order1.payOrder(cash);
